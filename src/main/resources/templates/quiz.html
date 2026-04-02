@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(${lesson.title} + ' 퀴즈', ~{::content})}">
+<body>
+<div th:fragment="content">
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+
+                <!-- 퀴즈 헤더 -->
+                <div class="text-center mb-4">
+                    <div class="quiz-icon mb-3">
+                        <i class="bi bi-patch-question display-3 text-warning"></i>
+                    </div>
+                    <h2 class="fw-bold" th:text="${lesson.title} + ' 퀴즈'"></h2>
+                    <p class="text-muted">
+                        총 <strong th:text="${#lists.size(questions)}">0</strong>문제 &nbsp;|&nbsp;
+                        60점 이상 통과 &nbsp;|&nbsp;
+                        <span class="text-success"><i class="bi bi-check-circle me-1"></i>여러 번 도전 가능</span>
+                    </p>
+                </div>
+
+                <!-- 레슨 복습 링크 -->
+                <div class="alert alert-info d-flex align-items-center mb-4" role="alert">
+                    <i class="bi bi-info-circle me-2 flex-shrink-0"></i>
+                    <div>
+                        퀴즈 전에 레슨을 충분히 읽었나요?
+                        <a th:href="@{/lessons/{id}(id=${lesson.id})}" class="alert-link ms-1">
+                            레슨 다시 보기 <i class="bi bi-box-arrow-up-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 퀴즈 폼 -->
+                <form th:action="@{/quiz/{id}/submit(id=${lesson.id})}" method="post">
+                    <div class="question-card mb-4" th:each="q, stat : ${questions}">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header" style="background: linear-gradient(135deg, #1a1a2e, #0f3460); color: white;">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="badge bg-warning text-dark fw-bold" th:text="'Q' + ${stat.count}"></span>
+                                    <span class="fw-bold" th:text="${q.questionText}"></span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-2">
+                                    <div class="col-12" th:if="${q.optionA != null}">
+                                        <label class="option-label w-100 p-3 rounded-2 border cursor-pointer">
+                                            <input type="radio" th:name="'q' + ${q.id}" value="A" class="me-2 option-radio">
+                                            <span class="badge bg-secondary me-2">A</span>
+                                            <span th:text="${q.optionA}"></span>
+                                        </label>
+                                    </div>
+                                    <div class="col-12" th:if="${q.optionB != null}">
+                                        <label class="option-label w-100 p-3 rounded-2 border cursor-pointer">
+                                            <input type="radio" th:name="'q' + ${q.id}" value="B" class="me-2 option-radio">
+                                            <span class="badge bg-secondary me-2">B</span>
+                                            <span th:text="${q.optionB}"></span>
+                                        </label>
+                                    </div>
+                                    <div class="col-12" th:if="${q.optionC != null}">
+                                        <label class="option-label w-100 p-3 rounded-2 border cursor-pointer">
+                                            <input type="radio" th:name="'q' + ${q.id}" value="C" class="me-2 option-radio">
+                                            <span class="badge bg-secondary me-2">C</span>
+                                            <span th:text="${q.optionC}"></span>
+                                        </label>
+                                    </div>
+                                    <div class="col-12" th:if="${q.optionD != null}">
+                                        <label class="option-label w-100 p-3 rounded-2 border cursor-pointer">
+                                            <input type="radio" th:name="'q' + ${q.id}" value="D" class="me-2 option-radio">
+                                            <span class="badge bg-secondary me-2">D</span>
+                                            <span th:text="${q.optionD}"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 제출 버튼 -->
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-warning btn-lg fw-bold" id="submitBtn" disabled>
+                            <i class="bi bi-check2-circle me-2"></i>답안 제출하기
+                        </button>
+                        <a th:href="@{/lessons/{id}(id=${lesson.id})}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-1"></i>레슨으로 돌아가기
+                        </a>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

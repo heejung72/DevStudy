@@ -1,0 +1,217 @@
+/* ===== devStudy Custom Styles ===== */
+
+:root {
+    --primary-dark: #1a1a2e;
+    --primary-mid: #16213e;
+    --primary-light: #0f3460;
+    --accent: #f6c90e;
+}
+
+body {
+    font-family: 'Segoe UI', 'Noto Sans KR', sans-serif;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+/* ===== Hero Section ===== */
+.hero-section {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(246, 201, 14, 0.05) 0%, transparent 60%);
+    animation: pulse 4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* ===== Cards ===== */
+.lesson-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 12px !important;
+}
+
+.lesson-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* ===== Lesson Content ===== */
+.lesson-content h3 {
+    color: var(--primary-light);
+    font-weight: 700;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+}
+
+.lesson-content p {
+    line-height: 1.8;
+    color: #444;
+}
+
+.lesson-content ul {
+    line-height: 2;
+}
+
+.lesson-content table {
+    font-size: 0.9rem;
+}
+
+.lesson-content code {
+    background-color: #e8eaf6;
+    color: #3949ab;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: 'Fira Code', 'Consolas', monospace;
+}
+
+.lesson-content pre {
+    background: #282c34;
+    color: #abb2bf;
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 0.875rem;
+}
+
+.lesson-content pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+}
+
+/* ===== Code Block ===== */
+pre {
+    margin: 0;
+    border-radius: 0 0 8px 8px;
+}
+
+pre code {
+    font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    display: block;
+    padding: 1.25rem !important;
+    overflow-x: auto;
+}
+
+.copy-btn {
+    font-size: 0.8rem;
+}
+
+/* ===== Quiz Styles ===== */
+.option-label {
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+}
+
+.option-label:hover {
+    background-color: #e8eaf6 !important;
+    border-color: #3949ab !important;
+}
+
+.option-label:has(input:checked) {
+    background-color: #e3f2fd !important;
+    border-color: #1976d2 !important;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+/* ===== Result ===== */
+.result-card {
+    border-radius: 16px;
+}
+
+/* ===== Score colors ===== */
+.score-100 { color: #4caf50; }
+.score-pass { color: #ff9800; }
+.score-fail { color: #f44336; }
+
+/* ===== Navbar ===== */
+.navbar-brand {
+    letter-spacing: -0.5px;
+}
+
+.nav-link {
+    font-weight: 500;
+    transition: color 0.15s;
+}
+
+/* ===== Footer ===== */
+.footer {
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    .hero-section h1 {
+        font-size: 1.75rem;
+    }
+
+    pre code {
+        font-size: 0.8rem;
+    }
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* ===== Tip Icons ===== */
+.tip-icon {
+    opacity: 0.85;
+}
+
+/* ===== Table Responsive ===== */
+.table th {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* ===== Badge ===== */
+.badge {
+    font-weight: 500;
+}
+
+/* ===== Alert ===== */
+.alert-info {
+    background-color: #e3f2fd;
+    border-color: #90caf9;
+    color: #1565c0;
+}

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('홈', ~{::content})}">
+<body>
+<div th:fragment="content">
+
+    <!-- Hero Section -->
+    <section class="hero-section text-white text-center py-5">
+        <div class="container py-4">
+            <div class="hero-icon mb-3">
+                <i class="bi bi-code-square display-1 text-warning"></i>
+            </div>
+            <h1 class="display-4 fw-bold mb-3">Java 개발 공부 시작하기</h1>
+            <p class="lead mb-4 text-light">
+                프로그래밍이 처음이어도 괜찮아요!<br>
+                기초부터 차근차근, 퀴즈로 확인하면서 배워봐요.
+            </p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a th:href="@{/lessons/1}" class="btn btn-warning btn-lg fw-bold px-4">
+                    <i class="bi bi-play-circle me-2"></i>첫 번째 레슨 시작
+                </a>
+                <a th:href="@{/lessons}" class="btn btn-outline-light btn-lg px-4">
+                    <i class="bi bi-list-ul me-2"></i>전체 목차 보기
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 진행 현황 -->
+    <section class="py-4 bg-light">
+        <div class="container">
+            <div class="row g-3 justify-content-center">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm text-center p-3">
+                        <div class="text-primary display-6 fw-bold" th:text="${completedCount}">0</div>
+                        <small class="text-muted">완료한 레슨</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm text-center p-3">
+                        <div class="text-success display-6 fw-bold" th:text="${totalCount}">12</div>
+                        <small class="text-muted">전체 레슨</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm text-center p-3">
+                        <div class="text-warning display-6 fw-bold"
+                             th:text="${totalCount > 0 ? #numbers.formatInteger(completedCount * 100 / totalCount, 1) + '%' : '0%'}">0%</div>
+                        <small class="text-muted">달성률</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 커리큘럼 -->
+    <section class="py-5">
+        <div class="container">
+            <h2 class="text-center fw-bold mb-2">📚 커리큘럼</h2>
+            <p class="text-center text-muted mb-5">12개의 레슨으로 Java의 기초를 완성하세요</p>
+
+            <!-- Java 기초 -->
+            <h4 class="fw-bold mb-3 border-start border-primary border-4 ps-3">Java 기초</h4>
+            <div class="row g-3 mb-5">
+                <th:block th:each="lesson : ${lessons}" th:if="${lesson.category == 'Java 기초'}">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 lesson-card border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge bg-primary me-2" th:text="'#' + ${lesson.orderNum}"></span>
+                                    <span class="badge" th:classappend="${lesson.difficulty == '입문'} ? 'bg-success' : (${lesson.difficulty == '초급'} ? 'bg-info' : 'bg-warning text-dark')"
+                                          th:text="${lesson.difficulty}"></span>
+                                </div>
+                                <h6 class="card-title fw-bold" th:text="${lesson.title}"></h6>
+                                <p class="card-text text-muted small" th:text="${lesson.description}"></p>
+                            </div>
+                            <div class="card-footer bg-transparent border-0 pt-0">
+                                <a th:href="@{/lessons/{id}(id=${lesson.id})}" class="btn btn-sm btn-outline-primary w-100">
+                                    <i class="bi bi-book-open me-1"></i>학습하기
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+
+            <!-- 자료구조 -->
+            <h4 class="fw-bold mb-3 border-start border-success border-4 ps-3">자료구조</h4>
+            <div class="row g-3 mb-5">
+                <th:block th:each="lesson : ${lessons}" th:if="${lesson.category == '자료구조'}">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 lesson-card border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge bg-success me-2" th:text="'#' + ${lesson.orderNum}"></span>
+                                    <span class="badge" th:classappend="${lesson.difficulty == '입문'} ? 'bg-success' : (${lesson.difficulty == '초급'} ? 'bg-info' : 'bg-warning text-dark')"
+                                          th:text="${lesson.difficulty}"></span>
+                                </div>
+                                <h6 class="card-title fw-bold" th:text="${lesson.title}"></h6>
+                                <p class="card-text text-muted small" th:text="${lesson.description}"></p>
+                            </div>
+                            <div class="card-footer bg-transparent border-0 pt-0">
+                                <a th:href="@{/lessons/{id}(id=${lesson.id})}" class="btn btn-sm btn-outline-success w-100">
+                                    <i class="bi bi-book-open me-1"></i>학습하기
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+
+            <!-- 객체지향(OOP) -->
+            <h4 class="fw-bold mb-3 border-start border-warning border-4 ps-3">객체지향(OOP)</h4>
+            <div class="row g-3 mb-5">
+                <th:block th:each="lesson : ${lessons}" th:if="${lesson.category == '객체지향(OOP)'}">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 lesson-card border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge bg-warning text-dark me-2" th:text="'#' + ${lesson.orderNum}"></span>
+                                    <span class="badge bg-warning text-dark" th:text="${lesson.difficulty}"></span>
+                                </div>
+                                <h6 class="card-title fw-bold" th:text="${lesson.title}"></h6>
+                                <p class="card-text text-muted small" th:text="${lesson.description}"></p>
+                            </div>
+                            <div class="card-footer bg-transparent border-0 pt-0">
+                                <a th:href="@{/lessons/{id}(id=${lesson.id})}" class="btn btn-sm btn-outline-warning w-100">
+                                    <i class="bi bi-book-open me-1"></i>학습하기
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+    </section>
+
+    <!-- 학습 팁 -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center fw-bold mb-5">💡 효과적인 학습 방법</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <div class="tip-icon mb-3">
+                            <i class="bi bi-pencil-square display-4 text-primary"></i>
+                        </div>
+                        <h5 class="fw-bold">직접 따라 치기</h5>
+                        <p class="text-muted">코드 예제를 복사하지 말고 직접 타이핑하세요. 손이 기억합니다.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <div class="tip-icon mb-3">
+                            <i class="bi bi-arrow-repeat display-4 text-success"></i>
+                        </div>
+                        <h5 class="fw-bold">반복이 최선</h5>
+                        <p class="text-muted">퀴즈를 틀렸다면 다시 레슨을 읽고 재도전하세요. 60점 이상이면 통과!</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <div class="tip-icon mb-3">
+                            <i class="bi bi-patch-question display-4 text-warning"></i>
+                        </div>
+                        <h5 class="fw-bold">모르면 검색</h5>
+                        <p class="text-muted">구글, Stack Overflow, 공식 문서를 활용하세요. 검색 능력도 개발 실력입니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+</body>
+</html>

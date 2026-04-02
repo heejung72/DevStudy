@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('전체 레슨', ~{::content})}">
+<body>
+<div th:fragment="content">
+
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="fw-bold mb-1"><i class="bi bi-list-ul me-2 text-primary"></i>전체 레슨 목록</h2>
+                <p class="text-muted mb-4">총 <strong th:text="${#lists.size(lessons)}">0</strong>개의 레슨이 있습니다.</p>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-6 col-lg-4" th:each="lesson : ${lessons}">
+                <div class="card h-100 border-0 shadow-sm lesson-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge bg-secondary" th:text="'Lesson ' + ${lesson.orderNum}"></span>
+                            <span class="badge"
+                                  th:classappend="${lesson.difficulty == '입문'} ? 'bg-success' : (${lesson.difficulty == '초급'} ? 'bg-info' : 'bg-warning text-dark')"
+                                  th:text="${lesson.difficulty}"></span>
+                        </div>
+                        <h6 class="card-title fw-bold" th:text="${lesson.title}"></h6>
+                        <p class="card-text text-muted small" th:text="${lesson.description}"></p>
+                        <div class="d-flex align-items-center gap-2 mt-2">
+                            <small class="text-muted">
+                                <i class="bi bi-tag me-1"></i><span th:text="${lesson.category}"></span>
+                            </small>
+                            <small class="text-muted">
+                                <i class="bi bi-question-circle me-1"></i>
+                                <span th:text="${lesson.questionCount} + '문제'"></span>
+                            </small>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 pt-0 pb-3">
+                        <a th:href="@{/lessons/{id}(id=${lesson.id})}" class="btn btn-primary btn-sm w-100">
+                            <i class="bi bi-book-open me-1"></i>학습 시작
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

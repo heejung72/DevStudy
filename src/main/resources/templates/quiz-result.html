@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('퀴즈 결과', ~{::content})}">
+<body>
+<div th:fragment="content">
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+
+                <!-- 결과 카드 -->
+                <div class="result-card text-center p-5 rounded-3 mb-4 text-white"
+                     th:style="${result.passed()} ? 'background: linear-gradient(135deg, #1a1a2e, #0a4c3d)' : 'background: linear-gradient(135deg, #1a1a2e, #4c0a0a)'">
+                    <div class="result-emoji display-1 mb-3" th:text="${result.passed()} ? '🎉' : '💪'"></div>
+                    <h2 class="fw-bold mb-2" th:text="${result.passed()} ? '통과! 잘하셨어요!' : '아직 조금 부족해요'"></h2>
+                    <div class="score-circle my-4 mx-auto d-flex align-items-center justify-content-center rounded-circle"
+                         style="width: 120px; height: 120px; border: 4px solid rgba(255,255,255,0.5); font-size: 2rem; font-weight: bold;">
+                        <span th:text="${result.score()} + '점'"></span>
+                    </div>
+                    <p class="lead mb-1">
+                        <span th:text="${result.total()}">0</span>문제 중
+                        <strong th:text="${result.correct()}">0</strong>문제 정답
+                    </p>
+                    <p class="text-light" th:text="${result.passed()} ? '60점 이상으로 통과했습니다! 다음 레슨으로 진행하세요.' : '60점 미만입니다. 레슨을 복습하고 다시 도전하세요!'"></p>
+                </div>
+
+                <!-- 문제별 상세 결과 -->
+                <h4 class="fw-bold mb-3"><i class="bi bi-clipboard-check me-2 text-primary"></i>상세 결과</h4>
+
+                <div class="mb-3" th:each="q, stat : ${result.questions()}">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header d-flex align-items-center gap-2"
+                             th:style="${result.answers()['q' + q.id] == q.correctAnswer} ? 'background: #d4edda;' : 'background: #f8d7da;'">
+                            <span th:text="${result.answers()['q' + q.id] == q.correctAnswer} ? '✅' : '❌'"></span>
+                            <span class="badge bg-secondary" th:text="'Q' + ${stat.count}"></span>
+                            <span class="small fw-bold" th:text="${q.questionText}"></span>
+                        </div>
+                        <div class="card-body py-3">
+                            <div class="row g-2">
+                                <!-- 선택지 표시 -->
+                                <div class="col-12 small" th:if="${q.optionA != null}">
+                                    <span class="option-result me-2"
+                                          th:classappend="${q.correctAnswer == 'A'} ? 'text-success fw-bold' : (${result.answers()['q' + q.id] == 'A' and q.correctAnswer != 'A'} ? 'text-danger text-decoration-line-through' : 'text-muted')">
+                                        <span class="badge me-1"
+                                              th:classappend="${q.correctAnswer == 'A'} ? 'bg-success' : (${result.answers()['q' + q.id] == 'A' and q.correctAnswer != 'A'} ? 'bg-danger' : 'bg-secondary')">A</span>
+                                        <span th:text="${q.optionA}"></span>
+                                        <span th:if="${q.correctAnswer == 'A'}" class="ms-1 text-success">← 정답</span>
+                                        <span th:if="${result.answers()['q' + q.id] == 'A' and q.correctAnswer != 'A'}" class="ms-1 text-danger">← 내 선택</span>
+                                    </span>
+                                </div>
+                                <div class="col-12 small" th:if="${q.optionB != null}">
+                                    <span class="option-result"
+                                          th:classappend="${q.correctAnswer == 'B'} ? 'text-success fw-bold' : (${result.answers()['q' + q.id] == 'B' and q.correctAnswer != 'B'} ? 'text-danger' : 'text-muted')">
+                                        <span class="badge me-1"
+                                              th:classappend="${q.correctAnswer == 'B'} ? 'bg-success' : (${result.answers()['q' + q.id] == 'B' and q.correctAnswer != 'B'} ? 'bg-danger' : 'bg-secondary')">B</span>
+                                        <span th:text="${q.optionB}"></span>
+                                        <span th:if="${q.correctAnswer == 'B'}" class="ms-1 text-success">← 정답</span>
+                                        <span th:if="${result.answers()['q' + q.id] == 'B' and q.correctAnswer != 'B'}" class="ms-1 text-danger">← 내 선택</span>
+                                    </span>
+                                </div>
+                                <div class="col-12 small" th:if="${q.optionC != null}">
+                                    <span class="option-result"
+                                          th:classappend="${q.correctAnswer == 'C'} ? 'text-success fw-bold' : (${result.answers()['q' + q.id] == 'C' and q.correctAnswer != 'C'} ? 'text-danger' : 'text-muted')">
+                                        <span class="badge me-1"
+                                              th:classappend="${q.correctAnswer == 'C'} ? 'bg-success' : (${result.answers()['q' + q.id] == 'C' and q.correctAnswer != 'C'} ? 'bg-danger' : 'bg-secondary')">C</span>
+                                        <span th:text="${q.optionC}"></span>
+                                        <span th:if="${q.correctAnswer == 'C'}" class="ms-1 text-success">← 정답</span>
+                                        <span th:if="${result.answers()['q' + q.id] == 'C' and q.correctAnswer != 'C'}" class="ms-1 text-danger">← 내 선택</span>
+                                    </span>
+                                </div>
+                                <div class="col-12 small" th:if="${q.optionD != null}">
+                                    <span class="option-result"
+                                          th:classappend="${q.correctAnswer == 'D'} ? 'text-success fw-bold' : (${result.answers()['q' + q.id] == 'D' and q.correctAnswer != 'D'} ? 'text-danger' : 'text-muted')">
+                                        <span class="badge me-1"
+                                              th:classappend="${q.correctAnswer == 'D'} ? 'bg-success' : (${result.answers()['q' + q.id] == 'D' and q.correctAnswer != 'D'} ? 'bg-danger' : 'bg-secondary')">D</span>
+                                        <span th:text="${q.optionD}"></span>
+                                        <span th:if="${q.correctAnswer == 'D'}" class="ms-1 text-success">← 정답</span>
+                                        <span th:if="${result.answers()['q' + q.id] == 'D' and q.correctAnswer != 'D'}" class="ms-1 text-danger">← 내 선택</span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- 해설 -->
+                            <div class="mt-3 p-2 rounded-2" style="background: #f8f9fa;">
+                                <small class="text-muted">
+                                    <i class="bi bi-lightbulb text-warning me-1"></i>
+                                    <strong>해설:</strong> <span th:text="${q.explanation}"></span>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 액션 버튼 -->
+                <div class="d-flex flex-column gap-2 mt-4">
+                    <a th:if="${result.passed() and nextLesson != null}"
+                       th:href="@{/lessons/{id}(id=${nextLesson.id})}"
+                       class="btn btn-success btn-lg fw-bold">
+                        <i class="bi bi-arrow-right me-2"></i>다음 레슨: <span th:text="${nextLesson.title}"></span>
+                    </a>
+                    <a th:if="${result.passed() and nextLesson == null}"
+                       th:href="@{/progress}"
+                       class="btn btn-success btn-lg fw-bold">
+                        <i class="bi bi-trophy me-2"></i>모든 레슨 완료! 진행도 보기
+                    </a>
+                    <a th:if="${!result.passed()}"
+                       th:href="@{/lessons/{id}(id=${lesson.id})}"
+                       class="btn btn-primary btn-lg fw-bold">
+                        <i class="bi bi-book-open me-2"></i>레슨 다시 복습하기
+                    </a>
+                    <a th:href="@{/quiz/{id}(id=${lesson.id})}" class="btn btn-outline-warning">
+                        <i class="bi bi-arrow-repeat me-1"></i>퀴즈 다시 풀기
+                    </a>
+                    <a th:href="@{/lessons}" class="btn btn-outline-secondary">
+                        <i class="bi bi-list-ul me-1"></i>전체 목차로
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

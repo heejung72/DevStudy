@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('내 진행도', ~{::content})}">
+<body>
+<div th:fragment="content">
+
+    <div class="container py-5">
+        <h2 class="fw-bold mb-1"><i class="bi bi-bar-chart me-2 text-primary"></i>내 학습 진행도</h2>
+        <p class="text-muted mb-4">퀴즈 결과가 여기에 기록됩니다. (브라우저 세션 기준)</p>
+
+        <!-- 요약 -->
+        <div class="row g-3 mb-5">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm text-center p-4">
+                    <div class="display-5 fw-bold text-success mb-1" th:text="${completedCount}">0</div>
+                    <p class="text-muted mb-0">완료한 레슨</p>
+                    <small class="text-muted">(60점 이상)</small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm text-center p-4">
+                    <div class="display-5 fw-bold text-primary mb-1" th:text="${totalCount}">12</div>
+                    <p class="text-muted mb-0">전체 레슨</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm text-center p-4">
+                    <div class="display-5 fw-bold text-warning mb-1"
+                         th:text="${totalCount > 0 ? #numbers.formatInteger(completedCount * 100 / totalCount, 1) + '%' : '0%'}">0%</div>
+                    <p class="text-muted mb-0">달성률</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 레슨별 현황 -->
+        <h4 class="fw-bold mb-3">레슨별 현황</h4>
+        <div class="row g-3 mb-4">
+            <div class="col-md-6 col-lg-4" th:each="lesson : ${lessons}">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <span class="badge bg-secondary mb-1" th:text="'Lesson ' + ${lesson.orderNum}"></span>
+                                <h6 class="fw-bold mb-0" th:text="${lesson.title}"></h6>
+                            </div>
+                            <!-- 완료 여부 표시 -->
+                            <th:block th:each="progress : ${progressList}">
+                                <span th:if="${progress.lessonId == lesson.id and progress.completed}"
+                                      class="badge bg-success"><i class="bi bi-check-lg me-1"></i>통과</span>
+                                <span th:if="${progress.lessonId == lesson.id and !progress.completed}"
+                                      class="badge bg-danger">미통과</span>
+                            </th:block>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 pt-0 pb-3">
+                        <a th:href="@{/quiz/{id}(id=${lesson.id})}" class="btn btn-sm btn-outline-warning">
+                            <i class="bi bi-arrow-repeat me-1"></i>퀴즈 도전
+                        </a>
+                        <a th:href="@{/lessons/{id}(id=${lesson.id})}" class="btn btn-sm btn-outline-primary ms-1">
+                            <i class="bi bi-book-open me-1"></i>복습
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 퀴즈 기록 -->
+        <h4 class="fw-bold mb-3">퀴즈 기록</h4>
+        <div th:if="${#lists.isEmpty(progressList)}" class="alert alert-info">
+            <i class="bi bi-info-circle me-2"></i>아직 퀴즈를 풀지 않았습니다. 레슨을 학습하고 퀴즈에 도전해보세요!
+            <a th:href="@{/lessons/1}" class="alert-link ms-1">첫 번째 레슨 시작하기</a>
+        </div>
+
+        <div class="table-responsive" th:unless="${#lists.isEmpty(progressList)}">
+            <table class="table table-hover border-0 shadow-sm">
+                <thead style="background: #1a1a2e; color: white;">
+                    <tr>
+                        <th>레슨</th>
+                        <th class="text-center">점수</th>
+                        <th class="text-center">결과</th>
+                        <th class="text-center">완료 시각</th>
+                        <th class="text-center">재도전</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="progress : ${progressList}">
+                        <td class="fw-bold" th:text="${progress.lessonTitle}"></td>
+                        <td class="text-center">
+                            <span class="fw-bold"
+                                  th:classappend="${progress.score >= 80} ? 'text-success' : (${progress.score >= 60} ? 'text-warning' : 'text-danger')"
+                                  th:text="${progress.score} + '점'"></span>
+                        </td>
+                        <td class="text-center">
+                            <span th:if="${progress.completed}" class="badge bg-success">통과</span>
+                            <span th:unless="${progress.completed}" class="badge bg-danger">미통과</span>
+                        </td>
+                        <td class="text-center small text-muted"
+                            th:text="${#temporals.format(progress.completedAt, 'MM/dd HH:mm')}"></td>
+                        <td class="text-center">
+                            <a th:href="@{/quiz/{id}(id=${progress.lessonId})}"
+                               class="btn btn-sm btn-outline-warning">재도전</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 격려 메시지 -->
+        <div class="text-center mt-5 p-4 rounded-3" style="background: linear-gradient(135deg, #1a1a2e, #0f3460); color: white;">
+            <h4 class="fw-bold mb-2">🚀 계속 도전하세요!</h4>
+            <p class="text-light mb-3">
+                <span th:text="${completedCount}">0</span>/<span th:text="${totalCount}">12</span> 레슨 완료<br>
+                포기하지 마세요. 꾸준함이 실력이 됩니다.
+            </p>
+            <a th:href="@{/lessons}" class="btn btn-warning fw-bold">
+                <i class="bi bi-play-circle me-2"></i>계속 학습하기
+            </a>
+        </div>
+
+    </div>
+
+</div>
+</body>
+</html>
