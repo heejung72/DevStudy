@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('지원 정보', ~{::content})}">
+<th:block th:fragment="content">
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+
+            <div class="d-flex align-items-center gap-2 mb-4">
+                <a th:href="@{/applications}" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i>
+                </a>
+                <h4 class="fw-bold mb-0"
+                    th:text="${appId != null ? '지원 정보 수정' : '지원 추가'}">지원 추가</h4>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <form th:action="${appId != null ? '/applications/' + appId + '/edit' : '/applications/new'}"
+                          method="post">
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">회사명 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="companyName"
+                                   th:value="${form.companyName}" placeholder="예) 카카오" required maxlength="50">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">포지션</label>
+                            <input type="text" class="form-control" name="position"
+                                   th:value="${form.position}" placeholder="예) 백엔드 개발자 (신입)" maxlength="50">
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">지원일 <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" name="appliedDate"
+                                       th:value="${form.appliedDate}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">현재 단계 <span class="text-danger">*</span></label>
+                                <select class="form-select" name="stage" required>
+                                    <option th:each="s : ${stages}"
+                                            th:value="${s.name()}"
+                                            th:text="${s.label}"
+                                            th:selected="${form.stage == s}"></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">결과</label>
+                            <select class="form-select" name="result">
+                                <option th:each="r : ${results}"
+                                        th:value="${r.name()}"
+                                        th:text="${r.label}"
+                                        th:selected="${form.result == r}"></option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">메모</label>
+                            <textarea class="form-control" name="memo" rows="3"
+                                      placeholder="지원 경로, 준비 사항 등" maxlength="500"
+                                      th:text="${form.memo}"></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="publicVisible"
+                                       name="publicVisible" th:checked="${form.publicVisible}">
+                                <label class="form-check-label" for="publicVisible">
+                                    <i class="bi bi-eye me-1"></i>그룹 멤버에게 공개
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary flex-grow-1">
+                                <i class="bi bi-check-circle me-1"></i>저장하기
+                            </button>
+                            <a th:href="@{/applications}" class="btn btn-outline-secondary">취소</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</th:block>
+</html>

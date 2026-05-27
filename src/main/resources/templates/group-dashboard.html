@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('그룹 대시보드', ~{::content})}">
+<th:block th:fragment="content">
+<div class="container py-4">
+
+    <!-- 그룹 코드 알림 (신규 생성 시) -->
+    <div th:if="${newGroupCode}" class="alert alert-success alert-dismissible fade show d-flex align-items-center gap-3 mb-4">
+        <i class="bi bi-check-circle-fill fs-4"></i>
+        <div>
+            <strong>그룹이 생성되었습니다!</strong>
+            친구에게 그룹 코드를 알려주세요:
+            <span class="badge bg-dark fs-6 ms-2 group-code-badge" th:text="${newGroupCode}"></span>
+            <button class="btn btn-sm btn-outline-success ms-2" onclick="copyGroupCode(this)"
+                    th:data-code="${newGroupCode}">
+                <i class="bi bi-clipboard"></i> 복사
+            </button>
+        </div>
+        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- 헤더 -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div>
+            <h2 class="fw-bold mb-1" th:text="${group.name}">그룹명</h2>
+            <span class="text-muted me-3">
+                <i class="bi bi-people me-1"></i>
+                <span th:text="${members.size()}">0</span>명
+            </span>
+            <span class="badge bg-secondary group-code-badge" th:text="${group.groupCode}">코드</span>
+            <button class="btn btn-sm btn-outline-secondary ms-1" onclick="copyGroupCode(this)"
+                    th:data-code="${group.groupCode}">
+                <i class="bi bi-clipboard"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 오늘 체크인 현황 -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-transparent border-0 pt-3 pb-2">
+            <h6 class="fw-bold mb-0">
+                <i class="bi bi-calendar-check text-success me-2"></i>오늘 체크인 현황
+            </h6>
+        </div>
+        <div class="card-body pt-2">
+            <div class="row g-3">
+                <div th:each="member : ${members}" class="col-sm-6 col-md-4">
+                    <div class="checkin-card p-3 rounded-3"
+                         th:classappend="${todayCheckins.stream().anyMatch(c -> c.member.id == member.id)} ? ' checked' : ' not-checked'">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <span class="avatar-circle-sm" th:text="${#strings.substring(member.nickname, 0, 1)}">N</span>
+                            <span class="fw-semibold" th:text="${member.nickname}">닉네임</span>
+                            <span th:if="${member.id == currentMemberId}" class="badge bg-primary ms-auto">나</span>
+                            <i class="bi bi-check-circle-fill text-success ms-auto"
+                               th:if="${todayCheckins.stream().anyMatch(c -> c.member.id == member.id)}"></i>
+                            <i class="bi bi-circle text-muted ms-auto"
+                               th:unless="${todayCheckins.stream().anyMatch(c -> c.member.id == member.id)}"></i>
+                        </div>
+                        <div th:each="checkin : ${todayCheckins}"
+                             th:if="${checkin.member.id == member.id}">
+                            <small class="text-muted fst-italic" th:text="${checkin.content}"></small>
+                        </div>
+                        <div th:unless="${todayCheckins.stream().anyMatch(c -> c.member.id == member.id)}">
+                            <small class="text-muted">아직 체크인 안 함</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3">
+                <a th:href="@{/goals}" class="btn btn-sm btn-outline-success">
+                    <i class="bi bi-plus-circle me-1"></i>나도 체크인하기
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- 최근 지원 현황 -->
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-transparent border-0 pt-3 pb-2 d-flex justify-content-between align-items-center">
+                    <h6 class="fw-bold mb-0">
+                        <i class="bi bi-briefcase text-primary me-2"></i>최근 지원 현황 (7일)
+                    </h6>
+                    <a th:href="@{/applications}" class="btn btn-sm btn-outline-primary">전체 보기</a>
+                </div>
+                <div class="card-body pt-0">
+                    <div th:if="${recentApplications.empty}" class="text-center py-4 text-muted">
+                        <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                        최근 지원 내역이 없습니다
+                    </div>
+                    <div th:unless="${recentApplications.empty}" class="list-group list-group-flush">
+                        <div th:each="app : ${recentApplications}"
+                             th:if="${app.publicVisible or app.member.id == currentMemberId}"
+                             class="list-group-item px-0 py-2 border-0 border-bottom">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="avatar-circle-sm" th:text="${#strings.substring(app.member.nickname, 0, 1)}">N</span>
+                                <div class="flex-grow-1 min-w-0">
+                                    <div class="fw-semibold text-truncate" th:text="${app.companyName}">회사명</div>
+                                    <small class="text-muted" th:text="${app.position}">포지션</small>
+                                </div>
+                                <div class="text-end flex-shrink-0">
+                                    <span class="badge stage-badge"
+                                          th:classappend="${'stage-' + app.stage.name()}"
+                                          th:text="${app.stage.label}">단계</span>
+                                    <div>
+                                        <small class="text-muted" th:text="${app.member.nickname}">닉네임</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 이번 주 목표 -->
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-transparent border-0 pt-3 pb-2 d-flex justify-content-between align-items-center">
+                    <h6 class="fw-bold mb-0">
+                        <i class="bi bi-bullseye text-warning me-2"></i>이번 주 목표
+                    </h6>
+                    <a th:href="@{/goals}" class="btn btn-sm btn-outline-warning">목표 설정</a>
+                </div>
+                <div class="card-body pt-0">
+                    <div th:if="${weekGoals.empty}" class="text-center py-4 text-muted">
+                        <i class="bi bi-flag fs-2 d-block mb-2"></i>
+                        아직 목표를 설정하지 않았습니다
+                    </div>
+                    <div th:unless="${weekGoals.empty}">
+                        <div th:each="goal : ${weekGoals}" class="goal-item p-2 mb-2 rounded-2">
+                            <div class="d-flex align-items-start gap-2">
+                                <span class="avatar-circle-sm mt-1" th:text="${#strings.substring(goal.member.nickname, 0, 1)}">N</span>
+                                <div>
+                                    <div class="fw-semibold small" th:text="${goal.member.nickname}">닉네임</div>
+                                    <div class="text-muted small" th:text="${goal.content}">목표 내용</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+function copyGroupCode(btn) {
+    const code = btn.dataset.code;
+    navigator.clipboard.writeText(code).then(() => {
+        const original = btn.innerHTML;
+        btn.innerHTML = '<i class="bi bi-check"></i> 복사됨';
+        setTimeout(() => btn.innerHTML = original, 2000);
+    });
+}
+</script>
+</th:block>
+</html>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${title} + ' | devStudy'">devStudy</title>
+    <title th:text="${title} + ' | 취준스터디'">취준스터디</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
@@ -12,24 +12,60 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);">
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top main-navbar">
     <div class="container">
-        <a class="navbar-brand fw-bold fs-4" th:href="@{/}">
-            <i class="bi bi-code-square me-2 text-warning"></i>devStudy
+        <a class="navbar-brand fw-bold fs-5" th:href="@{/group}">
+            <i class="bi bi-people-fill me-2 text-warning"></i>취준스터디
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activePage == 'group' ? ' active' : ''}" th:href="@{/group}">
+                        <i class="bi bi-house me-1"></i>그룹 대시보드
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activePage == 'applications' ? ' active' : ''}" th:href="@{/applications}">
+                        <i class="bi bi-briefcase me-1"></i>지원 현황
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activePage == 'goals' ? ' active' : ''}" th:href="@{/goals}">
+                        <i class="bi bi-check2-circle me-1"></i>목표/체크인
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activePage == 'study' ? ' active' : ''}" th:href="@{/study}">
+                        <i class="bi bi-book me-1"></i>스터디
+                    </a>
+                </li>
+            </ul>
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/}"><i class="bi bi-house me-1"></i>홈</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/lessons}"><i class="bi bi-book me-1"></i>레슨</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/progress}"><i class="bi bi-bar-chart me-1"></i>내 진행도</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center gap-2"
+                       href="#" data-bs-toggle="dropdown">
+                        <span class="avatar-circle" th:text="${#strings.substring(session.loginNickname, 0, 1)}">N</span>
+                        <span th:text="${session.loginNickname}">닉네임</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><h6 class="dropdown-header" th:text="${session.loginGroupName}">그룹명</h6></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" th:href="@{/mypage}">
+                                <i class="bi bi-person me-2"></i>마이페이지
+                            </a>
+                        </li>
+                        <li>
+                            <form th:action="@{/logout}" method="post" class="d-inline w-100">
+                                <button type="submit" class="dropdown-item text-danger">
+                                    <i class="bi bi-box-arrow-right me-2"></i>로그아웃
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </div>
@@ -40,10 +76,10 @@
     <div th:replace="${content}"></div>
 </main>
 
-<footer class="footer mt-auto py-4" style="background: #1a1a2e; color: #adb5bd;">
+<footer class="footer mt-auto py-4">
     <div class="container text-center">
-        <p class="mb-1"><i class="bi bi-code-square text-warning me-2"></i><strong class="text-white">devStudy</strong> — 초보 개발자를 위한 Java 학습 플랫폼</p>
-        <small>포기하지 마세요. 모든 고수도 처음엔 초보였습니다. 🚀</small>
+        <p class="mb-1"><i class="bi bi-people-fill text-warning me-2"></i><strong class="text-white">취준스터디</strong> — 같이 하면 더 빨리 간다</p>
+        <small class="text-muted">포기하지 마세요. 같이 하면 됩니다.</small>
     </div>
 </footer>
 

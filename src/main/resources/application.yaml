@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: devStudy
+  profiles:
+    active: local
+  thymeleaf:
+    cache: false
+    encoding: UTF-8
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    open-in-view: false
+
+server:
+  port: 8081
+
+logging:
+  level:
+    com.devstudy: INFO

@@ -1,16 +1,13 @@
 package com.devstudy.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "user_progress")
+@Table(name = "user_progress",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"member_id", "lesson_id"}))
 @Getter
 @Setter
 @Builder
@@ -22,8 +19,8 @@ public class UserProgress {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "session_id")
-    private String sessionId;
+    @Column(name = "member_id")
+    private Long memberId;
 
     @Column(name = "lesson_id")
     private Long lessonId;

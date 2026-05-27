@@ -1,5 +1,6 @@
 package com.devstudy.controller;
 
+import com.devstudy.config.SessionConst;
 import com.devstudy.domain.Lesson;
 import com.devstudy.service.LessonService;
 import com.devstudy.service.QuizService;
@@ -10,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/quiz")
@@ -26,6 +26,7 @@ public class QuizController {
                 .orElseThrow(() -> new IllegalArgumentException("레슨을 찾을 수 없습니다: " + lessonId));
         model.addAttribute("lesson", lesson);
         model.addAttribute("questions", quizService.getQuestionsByLessonId(lessonId));
+        model.addAttribute("activePage", "study");
         return "quiz";
     }
 
@@ -34,23 +35,16 @@ public class QuizController {
                               @RequestParam Map<String, String> answers,
                               HttpSession session,
                               Model model) {
-        ensureSessionId(session);
-        String sessionId = (String) session.getAttribute("sessionId");
-
+        Long memberId = (Long) session.getAttribute(SessionConst.MEMBER_ID);
         Lesson lesson = lessonService.getLessonById(lessonId)
                 .orElseThrow(() -> new IllegalArgumentException("레슨을 찾을 수 없습니다: " + lessonId));
 
-        QuizService.QuizResult result = quizService.gradeQuiz(lessonId, lesson.getTitle(), sessionId, answers);
+        QuizService.QuizResult result = quizService.gradeQuiz(lessonId, lesson.getTitle(), memberId, answers);
 
         model.addAttribute("lesson", lesson);
         model.addAttribute("result", result);
         model.addAttribute("nextLesson", lessonService.getNextLesson(lessonId).orElse(null));
+        model.addAttribute("activePage", "study");
         return "quiz-result";
-    }
-
-    private void ensureSessionId(HttpSession session) {
-        if (session.getAttribute("sessionId") == null) {
-            session.setAttribute("sessionId", UUID.randomUUID().toString());
-        }
     }
 }

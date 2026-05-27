@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('지원 현황', ~{::content})}">
+<th:block th:fragment="content">
+<div class="container py-4">
+
+    <!-- 헤더 -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-1"><i class="bi bi-briefcase me-2 text-primary"></i>지원 현황</h3>
+            <small class="text-muted">그룹 전체 지원 현황 (비공개 항목은 본인만 표시)</small>
+        </div>
+        <a th:href="@{/applications/new}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i>지원 추가
+        </a>
+    </div>
+
+    <!-- 성공/에러 메시지 -->
+    <div th:if="${successMsg}" class="alert alert-success alert-dismissible fade show">
+        <i class="bi bi-check-circle me-2"></i><span th:text="${successMsg}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- 단계별 통계 -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-sm-4 col-md-2" th:each="stage : ${stages}">
+            <div class="card border-0 text-center stage-stat-card">
+                <div class="card-body py-2 px-1">
+                    <div class="fw-bold fs-5 stage-count"
+                         th:text="${applications.stream().filter(a -> a.stage == stage and (a.publicVisible or a.member.id == currentMemberId)).count()}">0</div>
+                    <small class="text-muted" th:text="${stage.label}">단계</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 테이블 -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div th:if="${applications.empty}" class="text-center py-5 text-muted">
+                <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+                <p>아직 지원 내역이 없습니다</p>
+                <a th:href="@{/applications/new}" class="btn btn-primary">첫 지원 추가하기</a>
+            </div>
+            <div th:unless="${applications.empty}" class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="table-dark">
+                    <tr>
+                        <th class="ps-3">멤버</th>
+                        <th>회사</th>
+                        <th>포지션</th>
+                        <th>지원일</th>
+                        <th>단계</th>
+                        <th>결과</th>
+                        <th class="text-center">공개</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="app : ${applications}"
+                        th:if="${app.publicVisible or app.member.id == currentMemberId}">
+                        <td class="ps-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="avatar-circle-sm"
+                                      th:text="${#strings.substring(app.member.nickname, 0, 1)}">N</span>
+                                <span th:text="${app.member.nickname}"></span>
+                                <span th:if="${app.member.id == currentMemberId}"
+                                      class="badge bg-primary">나</span>
+                            </div>
+                        </td>
+                        <td class="fw-semibold" th:text="${app.companyName}"></td>
+                        <td class="text-muted" th:text="${app.position ?: '-'}"></td>
+                        <td>
+                            <small th:text="${#temporals.format(app.appliedDate, 'MM/dd')}"></small>
+                        </td>
+                        <td>
+                            <span class="badge stage-badge"
+                                  th:classappend="${'stage-' + app.stage.name()}"
+                                  th:text="${app.stage.label}"></span>
+                        </td>
+                        <td>
+                            <span class="badge result-badge"
+                                  th:classappend="${'result-' + app.result.name()}"
+                                  th:text="${app.result.label}"></span>
+                        </td>
+                        <td class="text-center">
+                            <i th:if="${app.publicVisible}" class="bi bi-eye text-success"></i>
+                            <i th:unless="${app.publicVisible}" class="bi bi-eye-slash text-muted"></i>
+                        </td>
+                        <td>
+                            <div th:if="${app.member.id == currentMemberId}" class="d-flex gap-1">
+                                <a th:href="@{/applications/{id}/edit(id=${app.id})}"
+                                   class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form th:action="@{/applications/{id}/delete(id=${app.id})}" method="post"
+                                      onsubmit="return confirm('삭제하시겠습니까?')">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</th:block>
+</html>

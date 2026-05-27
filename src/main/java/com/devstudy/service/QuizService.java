@@ -25,7 +25,7 @@ public class QuizService {
     }
 
     @Transactional
-    public QuizResult gradeQuiz(Long lessonId, String lessonTitle, String sessionId, Map<String, String> answers) {
+    public QuizResult gradeQuiz(Long lessonId, String lessonTitle, Long memberId, Map<String, String> answers) {
         List<Question> questions = getQuestionsByLessonId(lessonId);
         int correct = 0;
 
@@ -39,7 +39,7 @@ public class QuizService {
         int total = questions.size();
         int score = total > 0 ? (correct * 100 / total) : 0;
 
-        Optional<UserProgress> existing = userProgressRepository.findBySessionIdAndLessonId(sessionId, lessonId);
+        Optional<UserProgress> existing = userProgressRepository.findByMemberIdAndLessonId(memberId, lessonId);
         if (existing.isPresent()) {
             UserProgress progress = existing.get();
             if (score > progress.getScore()) {
@@ -50,7 +50,7 @@ public class QuizService {
             }
         } else {
             userProgressRepository.save(UserProgress.builder()
-                    .sessionId(sessionId)
+                    .memberId(memberId)
                     .lessonId(lessonId)
                     .lessonTitle(lessonTitle)
                     .score(score)
@@ -63,12 +63,12 @@ public class QuizService {
         return new QuizResult(correct, total, score, questions, answers);
     }
 
-    public List<UserProgress> getProgressBySession(String sessionId) {
-        return userProgressRepository.findBySessionIdOrderByCompletedAtDesc(sessionId);
+    public List<UserProgress> getProgressByMember(Long memberId) {
+        return userProgressRepository.findByMemberIdOrderByCompletedAtDesc(memberId);
     }
 
-    public long getCompletedCount(String sessionId) {
-        return userProgressRepository.countBySessionIdAndCompleted(sessionId, true);
+    public long getCompletedCount(Long memberId) {
+        return userProgressRepository.countByMemberIdAndCompleted(memberId, true);
     }
 
     public record QuizResult(int correct, int total, int score,

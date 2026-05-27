@@ -42,6 +42,10 @@ public class Lesson {
     @Column(name = "difficulty")
     private String difficulty;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "study_category_id")
+    private StudyCategory studyCategory;
+
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Question> questions = new ArrayList<>();

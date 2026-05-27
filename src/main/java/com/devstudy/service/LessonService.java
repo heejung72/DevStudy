@@ -1,6 +1,7 @@
 package com.devstudy.service;
 
 import com.devstudy.domain.Lesson;
+import com.devstudy.domain.StudyCategory;
 import com.devstudy.repository.LessonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,12 +21,12 @@ public class LessonService {
         return lessonRepository.findAllByOrderByOrderNumAsc();
     }
 
-    public Optional<Lesson> getLessonById(Long id) {
-        return lessonRepository.findById(id);
+    public List<Lesson> getLessonsByStudyCategory(StudyCategory category) {
+        return lessonRepository.findByStudyCategoryOrderByOrderNumAsc(category);
     }
 
-    public List<Lesson> getLessonsByCategory(String category) {
-        return lessonRepository.findByCategoryOrderByOrderNumAsc(category);
+    public Optional<Lesson> getLessonById(Long id) {
+        return lessonRepository.findById(id);
     }
 
     public Optional<Lesson> getNextLesson(Long currentId) {

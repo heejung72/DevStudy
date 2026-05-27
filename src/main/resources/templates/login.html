@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 | 취준스터디</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="login-bg">
+
+<div class="container min-vh-100 d-flex align-items-center justify-content-center">
+    <div class="col-md-5 col-lg-4">
+
+        <!-- 브랜드 -->
+        <div class="text-center mb-4">
+            <div class="brand-icon mx-auto mb-3">
+                <i class="bi bi-people-fill fs-1 text-warning"></i>
+            </div>
+            <h2 class="fw-bold text-white">취준스터디</h2>
+            <p class="text-muted">친구들과 함께하는 취준 트래커</p>
+        </div>
+
+        <!-- 에러 메시지 -->
+        <div th:if="${errorMsg}" class="alert alert-danger d-flex align-items-center gap-2" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span th:text="${errorMsg}"></span>
+        </div>
+
+        <!-- 로그인 카드 -->
+        <div class="card shadow-lg border-0">
+            <div class="card-body p-4">
+                <h5 class="card-title fw-bold mb-4">
+                    <i class="bi bi-door-open me-2 text-primary"></i>그룹 참여
+                </h5>
+                <form th:action="@{/login}" method="post">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">닉네임</label>
+                        <input type="text" class="form-control form-control-lg" name="nickname"
+                               placeholder="홍길동" required maxlength="20" autocomplete="off">
+                        <div class="form-text">그룹에서 사용할 이름입니다</div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">그룹 코드</label>
+                        <input type="text" class="form-control form-control-lg text-uppercase" name="groupCode"
+                               placeholder="AB1234" required maxlength="8" style="letter-spacing: 3px;"
+                               oninput="this.value = this.value.toUpperCase()">
+                        <div class="form-text">친구에게 그룹 코드를 받으세요</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg w-100 fw-semibold">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>참여하기
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 그룹 만들기 -->
+        <div class="text-center mt-4">
+            <span class="text-muted">아직 그룹이 없나요?</span>
+            <a th:href="@{/group/new}" class="ms-2 text-warning fw-semibold text-decoration-none">
+                새 그룹 만들기 <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

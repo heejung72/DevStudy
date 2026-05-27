@@ -215,3 +215,187 @@ pre code {
     border-color: #90caf9;
     color: #1565c0;
 }
+
+/* ===== Navbar ===== */
+.main-navbar {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%) !important;
+}
+
+/* ===== Avatar ===== */
+.avatar-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f6c90e, #f89820);
+    color: #1a1a2e;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.avatar-circle-sm {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f6c90e, #f89820);
+    color: #1a1a2e;
+    font-weight: 700;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+}
+
+.profile-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f6c90e, #f89820);
+    color: #1a1a2e;
+    font-weight: 800;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+/* ===== Login Page ===== */
+.login-bg {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    min-height: 100vh;
+}
+
+.brand-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: rgba(246, 201, 14, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===== Group Code Badge ===== */
+.group-code-badge {
+    font-family: 'Fira Code', 'Consolas', monospace;
+    letter-spacing: 3px;
+    font-size: 0.9rem;
+}
+
+/* ===== Dashboard Checkin Cards ===== */
+.checkin-card {
+    transition: background 0.2s;
+}
+.checkin-card.checked {
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+}
+.checkin-card.not-checked {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+}
+
+/* ===== Stage Badge Colors ===== */
+.stage-badge { font-size: 0.75rem; }
+.stage-DOCUMENT        { background-color: #6c757d !important; }
+.stage-CODING_TEST     { background-color: #0ea5e9 !important; }
+.stage-FIRST_INTERVIEW { background-color: #8b5cf6 !important; }
+.stage-SECOND_INTERVIEW{ background-color: #d946ef !important; }
+.stage-FINAL_INTERVIEW { background-color: #f59e0b !important; color: #1a1a2e !important; }
+
+/* ===== Result Badge Colors ===== */
+.result-badge { font-size: 0.75rem; }
+.result-IN_PROGRESS { background-color: #6c757d !important; }
+.result-PASSED      { background-color: #22c55e !important; }
+.result-FAILED      { background-color: #ef4444 !important; }
+.result-WITHDRAWN   { background-color: #94a3b8 !important; }
+
+/* ===== Stage Stat Cards ===== */
+.stage-stat-card {
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+.stage-count { color: #1a1a2e; }
+
+/* ===== Goal Item ===== */
+.goal-item {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+}
+
+.current-goal-display {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+}
+
+/* ===== Checkin Feed ===== */
+.checkin-feed-item:last-child {
+    border-bottom: none !important;
+}
+
+/* ===== Study Category Cards ===== */
+.study-category-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 16px !important;
+}
+.study-category-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12) !important;
+}
+
+.study-category-card-add {
+    border-radius: 16px !important;
+    border: 2px dashed #dee2e6 !important;
+    transition: border-color 0.2s, background 0.2s;
+}
+.study-category-card-add:hover {
+    border-color: #6c757d !important;
+    background: #f8f9fa;
+}
+
+.study-icon-circle {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.study-icon-circle-sm {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.add-icon-circle {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===== Footer ===== */
+.footer {
+    background: #1a1a2e;
+    color: #adb5bd;
+    border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 576px) {
+    .group-code-badge { font-size: 0.8rem; }
+}

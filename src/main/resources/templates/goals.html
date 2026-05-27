@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('목표/체크인', ~{::content})}">
+<th:block th:fragment="content">
+<div class="container py-4">
+
+    <h3 class="fw-bold mb-1"><i class="bi bi-check2-circle me-2 text-success"></i>목표 & 체크인</h3>
+    <p class="text-muted mb-4">이번 주 목표를 설정하고, 오늘 한 것을 공유해요</p>
+
+    <!-- 알림 -->
+    <div th:if="${successMsg}" class="alert alert-success alert-dismissible fade show">
+        <i class="bi bi-check-circle me-2"></i><span th:text="${successMsg}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <!-- 이번 주 내 목표 -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-transparent border-0 pt-3">
+                    <h6 class="fw-bold mb-0">
+                        <i class="bi bi-bullseye text-warning me-2"></i>이번 주 내 목표
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div th:if="${myGoal != null}" class="current-goal-display mb-3 p-3 rounded-3">
+                        <p class="mb-0" th:text="${myGoal.content}">목표 내용</p>
+                    </div>
+                    <div th:unless="${myGoal != null}" class="text-muted small mb-3">
+                        아직 이번 주 목표를 설정하지 않았습니다.
+                    </div>
+                    <form th:action="@{/goals/save}" method="post">
+                        <div class="mb-2">
+                            <textarea class="form-control" name="content" rows="3"
+                                      placeholder="예) 이력서 완성, 코테 3문제, 지원서 2개 제출..."
+                                      th:text="${myGoal != null ? myGoal.content : ''}"
+                                      maxlength="300"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-warning btn-sm fw-semibold w-100">
+                            <i class="bi bi-save me-1"></i>목표 저장
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- 오늘 체크인 -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-transparent border-0 pt-3">
+                    <h6 class="fw-bold mb-0">
+                        <i class="bi bi-calendar-check text-success me-2"></i>오늘 체크인
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div th:if="${myCheckin != null}" class="current-goal-display mb-3 p-3 rounded-3">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                            <small class="text-success fw-semibold">오늘 체크인 완료!</small>
+                        </div>
+                        <p class="mb-0 text-muted small" th:text="${myCheckin.content}"></p>
+                    </div>
+                    <div th:unless="${myCheckin != null}" class="text-muted small mb-3">
+                        오늘 체크인을 아직 하지 않았습니다.
+                    </div>
+                    <form th:action="@{/goals/checkin}" method="post">
+                        <div class="mb-2">
+                            <textarea class="form-control" name="content" rows="3"
+                                      placeholder="오늘 한 것, 공부한 것, 느낀 것을 짧게..."
+                                      th:text="${myCheckin != null ? myCheckin.content : ''}"
+                                      maxlength="300"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-sm fw-semibold w-100">
+                            <i class="bi bi-check2 me-1"></i>
+                            <span th:text="${myCheckin != null ? '체크인 수정' : '오늘 체크인'}">체크인</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 그룹 이번 주 목표 -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-transparent border-0 pt-3">
+            <h6 class="fw-bold mb-0">
+                <i class="bi bi-people text-primary me-2"></i>그룹 이번 주 목표
+            </h6>
+        </div>
+        <div class="card-body">
+            <div th:if="${groupGoals.empty}" class="text-center py-3 text-muted">
+                <small>아직 이번 주 목표를 설정한 멤버가 없습니다</small>
+            </div>
+            <div class="row g-3" th:unless="${groupGoals.empty}">
+                <div th:each="goal : ${groupGoals}" class="col-md-6 col-lg-4">
+                    <div class="goal-item p-3 rounded-3">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span class="avatar-circle-sm"
+                                  th:text="${#strings.substring(goal.member.nickname, 0, 1)}">N</span>
+                            <span class="fw-semibold small" th:text="${goal.member.nickname}">닉네임</span>
+                        </div>
+                        <p class="text-muted small mb-0" th:text="${goal.content}">목표</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 최근 체크인 피드 -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-transparent border-0 pt-3">
+            <h6 class="fw-bold mb-0">
+                <i class="bi bi-clock-history text-secondary me-2"></i>최근 7일 체크인
+            </h6>
+        </div>
+        <div class="card-body">
+            <div th:if="${groupCheckins.empty}" class="text-center py-3 text-muted">
+                <small>최근 체크인 기록이 없습니다</small>
+            </div>
+            <div th:unless="${groupCheckins.empty}">
+                <div th:each="checkin : ${groupCheckins}" class="checkin-feed-item d-flex gap-3 py-2 border-bottom">
+                    <span class="avatar-circle-sm flex-shrink-0"
+                          th:text="${#strings.substring(checkin.member.nickname, 0, 1)}">N</span>
+                    <div class="flex-grow-1">
+                        <div class="d-flex gap-2 align-items-center mb-1">
+                            <span class="fw-semibold small" th:text="${checkin.member.nickname}">닉네임</span>
+                            <span class="text-muted small"
+                                  th:text="${#temporals.format(checkin.checkinDate, 'M월 d일')}">날짜</span>
+                        </div>
+                        <p class="text-muted small mb-0" th:text="${checkin.content}">내용</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</th:block>
+</html>

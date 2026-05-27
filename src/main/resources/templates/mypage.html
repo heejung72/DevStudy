@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('마이페이지', ~{::content})}">
+<th:block th:fragment="content">
+<div class="container py-4">
+
+    <!-- 프로필 헤더 -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+            <div class="d-flex align-items-center gap-4">
+                <div class="profile-avatar">
+                    <span th:text="${#strings.substring(member.nickname, 0, 1)}">N</span>
+                </div>
+                <div>
+                    <h4 class="fw-bold mb-1" th:text="${member.nickname}">닉네임</h4>
+                    <div class="text-muted">
+                        <i class="bi bi-people me-1"></i>
+                        <span th:text="${member.group.name}">그룹명</span>
+                        <span class="badge bg-secondary ms-2" th:text="${member.group.groupCode}">코드</span>
+                    </div>
+                    <small class="text-muted">
+                        <i class="bi bi-calendar3 me-1"></i>
+                        <span th:text="${#temporals.format(member.joinedAt, 'yyyy년 M월 d일')}">참여일</span> 참여
+                    </small>
+                </div>
+                <div class="ms-auto text-end">
+                    <div class="h3 fw-bold text-primary mb-0" th:text="${completedCount}">0</div>
+                    <small class="text-muted">레슨 완료</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- 내 지원 현황 -->
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-transparent border-0 pt-3 d-flex justify-content-between align-items-center">
+                    <h6 class="fw-bold mb-0">
+                        <i class="bi bi-briefcase text-primary me-2"></i>내 지원 현황
+                    </h6>
+                    <a th:href="@{/applications/new}" class="btn btn-sm btn-outline-primary">추가</a>
+                </div>
+                <div class="card-body">
+                    <div th:if="${myApplications.empty}" class="text-center py-4 text-muted">
+                        <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                        <small>지원 내역이 없습니다</small>
+                    </div>
+                    <div th:unless="${myApplications.empty}" class="list-group list-group-flush">
+                        <div th:each="app : ${myApplications}"
+                             class="list-group-item px-0 py-2 border-0 border-bottom">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="flex-grow-1">
+                                    <div class="fw-semibold" th:text="${app.companyName}">회사</div>
+                                    <small class="text-muted">
+                                        <span th:text="${app.position ?: ''}">포지션</span>
+                                        <span th:if="${app.appliedDate}" class="ms-2"
+                                              th:text="${#temporals.format(app.appliedDate, 'MM/dd')}"></span>
+                                    </small>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge stage-badge d-block mb-1"
+                                          th:classappend="${'stage-' + app.stage.name()}"
+                                          th:text="${app.stage.label}"></span>
+                                    <span class="badge result-badge"
+                                          th:classappend="${'result-' + app.result.name()}"
+                                          th:text="${app.result.label}"></span>
+                                </div>
+                                <div class="d-flex gap-1 flex-shrink-0">
+                                    <a th:href="@{/applications/{id}/edit(id=${app.id})}"
+                                       class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form th:action="@{/applications/{id}/delete(id=${app.id})}" method="post"
+                                          onsubmit="return confirm('삭제하시겠습니까?')">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 우측: 목표 + 스터디 진행도 -->
+        <div class="col-lg-5">
+
+            <!-- 이번 주 목표 -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-transparent border-0 pt-3 d-flex justify-content-between align-items-center">
+                    <h6 class="fw-bold mb-0">
+                        <i class="bi bi-bullseye text-warning me-2"></i>이번 주 목표
+                    </h6>
+                    <a th:href="@{/goals}" class="btn btn-sm btn-outline-warning">수정</a>
+                </div>
+                <div class="card-body">
+                    <div th:if="${myGoal != null}" class="current-goal-display p-3 rounded-3">
+                        <p class="mb-0" th:text="${myGoal.content}">목표</p>
+                    </div>
+                    <div th:unless="${myGoal != null}" class="text-center py-2 text-muted">
+                        <small>이번 주 목표가 없습니다</small><br>
+                        <a th:href="@{/goals}" class="btn btn-sm btn-outline-warning mt-2">목표 설정하기</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 스터디 진행도 -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent border-0 pt-3">
+                    <h6 class="fw-bold mb-0">
+                        <i class="bi bi-bar-chart text-info me-2"></i>스터디 진행도
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div th:if="${myProgress.empty}" class="text-center py-3 text-muted">
+                        <small>아직 퀴즈를 풀지 않았습니다</small>
+                    </div>
+                    <div th:unless="${myProgress.empty}">
+                        <div th:each="p : ${myProgress}" class="d-flex justify-content-between align-items-center py-1 border-bottom">
+                            <span class="small text-truncate me-2" th:text="${p.lessonTitle}">레슨명</span>
+                            <div class="text-end flex-shrink-0">
+                                <span class="badge"
+                                      th:classappend="${p.completed ? 'bg-success' : 'bg-secondary'}"
+                                      th:text="${p.score + '점'}">0점</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 최근 체크인 기록 -->
+    <div class="card border-0 shadow-sm mt-4" th:if="${!recentCheckins.empty}">
+        <div class="card-header bg-transparent border-0 pt-3">
+            <h6 class="fw-bold mb-0">
+                <i class="bi bi-clock-history text-secondary me-2"></i>내 체크인 기록
+            </h6>
+        </div>
+        <div class="card-body">
+            <div th:each="checkin : ${recentCheckins}" class="checkin-feed-item py-2 border-bottom">
+                <div class="d-flex justify-content-between align-items-start">
+                    <p class="text-muted small mb-0" th:text="${checkin.content}">내용</p>
+                    <small class="text-muted flex-shrink-0 ms-3"
+                           th:text="${#temporals.format(checkin.checkinDate, 'M월 d일')}">날짜</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</th:block>
+</html>

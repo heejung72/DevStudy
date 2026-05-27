@@ -2,8 +2,10 @@ package com.devstudy.init;
 
 import com.devstudy.domain.Lesson;
 import com.devstudy.domain.Question;
+import com.devstudy.domain.StudyCategory;
 import com.devstudy.repository.LessonRepository;
 import com.devstudy.repository.QuestionRepository;
+import com.devstudy.repository.StudyCategoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
@@ -20,17 +22,42 @@ public class DataInitializer implements ApplicationRunner {
 
     private final LessonRepository lessonRepository;
     private final QuestionRepository questionRepository;
+    private final StudyCategoryRepository studyCategoryRepository;
 
     @Override
     @Transactional
     public void run(ApplicationArguments args) {
+        initStudyCategories();
         if (lessonRepository.count() > 0) return;
         log.info("초기 학습 데이터 로딩 중...");
         initLessons();
         log.info("학습 데이터 로딩 완료!");
     }
 
+    private void initStudyCategories() {
+        if (studyCategoryRepository.count() > 0) return;
+        log.info("스터디 카테고리 초기화 중...");
+        studyCategoryRepository.save(StudyCategory.builder()
+                .name("Java")
+                .description("Java 기초부터 객체지향까지, 코딩 테스트 준비의 기본")
+                .icon("bi-cup-hot")
+                .colorHex("#f89820")
+                .orderNum(1)
+                .builtIn(true)
+                .build());
+        studyCategoryRepository.save(StudyCategory.builder()
+                .name("React")
+                .description("프론트엔드 개발의 핵심 라이브러리 (준비 중)")
+                .icon("bi-lightning-charge")
+                .colorHex("#61DAFB")
+                .orderNum(2)
+                .builtIn(false)
+                .build());
+        log.info("스터디 카테고리 초기화 완료!");
+    }
+
     private void initLessons() {
+        StudyCategory javaCategory = studyCategoryRepository.findByName("Java").orElseThrow();
 
         // =====================================================================
         // 레슨 1: Java 시작하기
@@ -40,6 +67,7 @@ public class DataInitializer implements ApplicationRunner {
                 .category("Java 기초")
                 .orderNum(1)
                 .difficulty("입문")
+                .studyCategory(javaCategory)
                 .description("Java 프로그래밍 언어의 기본 개념과 첫 번째 프로그램 작성법을 배웁니다.")
                 .content("""
                         <h3>Java란 무엇인가요?</h3>
@@ -150,6 +178,7 @@ public class DataInitializer implements ApplicationRunner {
                 .category("Java 기초")
                 .orderNum(2)
                 .difficulty("입문")
+                .studyCategory(javaCategory)
                 .description("데이터를 저장하는 변수와 기본 자료형(int, double, boolean, char, String)을 배웁니다.")
                 .content("""
                         <h3>변수(Variable)란?</h3>
@@ -277,6 +306,7 @@ public class DataInitializer implements ApplicationRunner {
                 .category("Java 기초")
                 .orderNum(3)
                 .difficulty("입문")
+                .studyCategory(javaCategory)
                 .description("산술, 비교, 논리, 대입 연산자를 배우고 계산을 수행하는 방법을 익힙니다.")
                 .content("""
                         <h3>산술 연산자</h3>
@@ -408,6 +438,7 @@ public class DataInitializer implements ApplicationRunner {
                 .category("Java 기초")
                 .orderNum(4)
                 .difficulty("초급")
+                .studyCategory(javaCategory)
                 .description("if-else, switch 조건문으로 조건에 따라 다른 코드를 실행하는 방법을 배웁니다.")
                 .content("""
                         <h3>if 문</h3>
@@ -525,6 +556,7 @@ public class DataInitializer implements ApplicationRunner {
                 .category("Java 기초")
                 .orderNum(5)
                 .difficulty("초급")
+                .studyCategory(javaCategory)
                 .description("for, while, do-while 반복문으로 코드를 반복 실행하는 방법을 배웁니다.")
                 .content("""
                         <h3>for 문</h3>
@@ -651,6 +683,7 @@ public class DataInitializer implements ApplicationRunner {
                 .category("자료구조")
                 .orderNum(6)
                 .difficulty("초급")
+                .studyCategory(javaCategory)
                 .description("같은 타입의 데이터를 여러 개 저장하는 배열(Array)을 배웁니다.")
                 .content("""
                         <h3>배열이란?</h3>
@@ -782,6 +815,7 @@ public class DataInitializer implements ApplicationRunner {
                 .category("Java 기초")
                 .orderNum(7)
                 .difficulty("초급")
+                .studyCategory(javaCategory)
                 .description("코드를 재사용하기 위한 메서드 정의, 매개변수, 반환값, 오버로딩을 배웁니다.")
                 .content("""
                         <h3>메서드란?</h3>
@@ -907,6 +941,7 @@ public class DataInitializer implements ApplicationRunner {
                 .category("객체지향(OOP)")
                 .orderNum(8)
                 .difficulty("중급")
+                .studyCategory(javaCategory)
                 .description("객체지향 프로그래밍의 핵심인 클래스와 객체, 생성자, 필드, 메서드를 배웁니다.")
                 .content("""
                         <h3>객체지향 프로그래밍(OOP)이란?</h3>
@@ -1046,6 +1081,7 @@ public class DataInitializer implements ApplicationRunner {
                 .category("객체지향(OOP)")
                 .orderNum(9)
                 .difficulty("중급")
+                .studyCategory(javaCategory)
                 .description("extends로 클래스를 상속하고, 오버라이딩과 다형성을 이해합니다.")
                 .content("""
                         <h3>상속 (Inheritance)</h3>
@@ -1188,6 +1224,7 @@ public class DataInitializer implements ApplicationRunner {
                 .category("객체지향(OOP)")
                 .orderNum(10)
                 .difficulty("중급")
+                .studyCategory(javaCategory)
                 .description("interface와 abstract class로 설계를 표준화하고 유연한 구조를 만드는 법을 배웁니다.")
                 .content("""
                         <h3>추상 클래스 (Abstract Class)</h3>
@@ -1332,6 +1369,7 @@ public class DataInitializer implements ApplicationRunner {
                 .category("자료구조")
                 .orderNum(11)
                 .difficulty("중급")
+                .studyCategory(javaCategory)
                 .description("배열의 한계를 극복하는 ArrayList와 키-값 쌍을 저장하는 HashMap을 배웁니다.")
                 .content("""
                         <h3>컬렉션 프레임워크</h3>
@@ -1463,6 +1501,7 @@ public class DataInitializer implements ApplicationRunner {
                 .category("Java 기초")
                 .orderNum(12)
                 .difficulty("중급")
+                .studyCategory(javaCategory)
                 .description("프로그램 오류를 우아하게 처리하는 try-catch-finally와 사용자 정의 예외를 배웁니다.")
                 .content("""
                         <h3>예외(Exception)란?</h3>

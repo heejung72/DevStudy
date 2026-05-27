@@ -9,5 +9,8 @@ build/
 # macOS
 .DS_Store
 
-# properties
-src/main/resources/application.properties
+# H2 file DB (local data)
+data/
+
+# Claude Code internal
+.claude/

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserProgressRepository extends JpaRepository<UserProgress, Long> {
-    List<UserProgress> findBySessionIdOrderByCompletedAtDesc(String sessionId);
-    Optional<UserProgress> findBySessionIdAndLessonId(String sessionId, Long lessonId);
-    long countBySessionIdAndCompleted(String sessionId, boolean completed);
+    Optional<UserProgress> findByMemberIdAndLessonId(Long memberId, Long lessonId);
+    List<UserProgress> findByMemberIdOrderByCompletedAtDesc(Long memberId);
+    long countByMemberIdAndCompleted(Long memberId, boolean completed);
 }
